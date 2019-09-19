@@ -1,2 +1,2 @@
 # node-notifcationIPC
-bring whole  new method clustering and  InterProcessCommunicate  
+bring whole  new level with clustering and  InterProcessCommunicate  
