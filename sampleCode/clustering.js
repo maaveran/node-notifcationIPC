@@ -8,35 +8,33 @@ if (cluster.isMaster){
     let    count = 0;
     
     for(let  i  = 0; i < numCPUs; i++){
-        const  customId = i + 100;
+        const  customId = i + 1;
         const  worker   = cluster.fork({ workerId : customId })
-        
+      
         //cluster 
-        ClusterMap[worker.id] = customId;
-        console.log(ClusterMap)
+        ClusterMap[worker.id] = customId; 
 
         worker.send({ msg : 'hello from master'})
 
         worker.on('message', msg => {
-            console.log('Message from worker', ClusterMap[worker.id])
-        })
+            console.log('Message from worker', ClusterMap[worker.id]) 
 
-        if(ClusterMap[worker.id]  === 101 &&  !count++ ){
-            const taskArg = { params : {
-                name :  'xyz'
-            },task : 'email'}
+            if(ClusterMap[worker.id]  === 1 &&  !count++ ){
+                const taskArg = { params : {
+                    name :  'xyz'
+                },task : 'email'}
 
-            worker.send(taskArg)
-        }else{
-            switch(msg.msgType){
-                case 'EMAIL':
-                    console.log('Action to perform is EMAIL')
-                    break;
-                default:
-                    break;
+                worker.send(taskArg)
+            }else{
+                switch(msg.msgType){
+                    case 'EMAIL':
+                        console.log('Action to perform is EMAIL')
+                        break;
+                    default:
+                        break;
+                }
             }
-        }
-        
+        });
     }
 }else{
     console.log(`worker start with pid :`,

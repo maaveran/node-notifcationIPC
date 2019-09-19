@@ -1,0 +1,23 @@
+{
+  "name": "node-notificationCluster",
+  "version": "1.0.0",
+  "description": "bring whole  new level with clustering and  InterProcessCommunicate",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/maaveran/node-notifcationIPC.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/maaveran/node-notifcationIPC/issues"
+  },
+  "homepage": "https://github.com/maaveran/node-notifcationIPC#readme",
+  "dependencies": {
+    "path": "^0.12.7"
+  }
+}
