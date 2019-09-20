@@ -19,6 +19,7 @@ if (cluster.isMaster){
         worker.on('message', msg => {
             console.log('Message from worker', ClusterMap[worker.id]) 
 
+            console.log(!count++)
             if(ClusterMap[worker.id]  === 1 &&  !count++ ){
                 const taskArg = { params : {
                     name :  'xyz'
