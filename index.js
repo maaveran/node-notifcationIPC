@@ -1,10 +1,12 @@
 const cluster  =  require('cluster');
+const  http    =  require('http')
 const express  =  require('express');
 const morgan   =  require('morgan'); 
-const rouetr   =  require('')
+const setRouter   =  require('./router')
 const bodyParser =  require('body-parser');
-let   workers  =  [];
 
+const app = express()
+let   workers  =  [];
 
 //Error Rejection handler
 process.on('unhandledRejection',(rejectionErr)=>{
@@ -14,13 +16,12 @@ process.on('unhandledRejection',(rejectionErr)=>{
 
 //Error Execption handler	
 process.on('uncaughtException',(uncaughtExc)=>{
-	console.log('E_Err::', rejectionErr)
+	console.log('E_Err::', uncaughtExc)
 	console.log('E_Stack::', JSON.stringify(uncaughtExc.stack))
 })
 
-
 const setupWorkerProcess = () => {
-	let numCPUs = requier('os').cpus().length
+	let numCPUs = require('os').cpus().length
 
 	//read total core
 	console.info(`total cores  : `+numCPUs)
@@ -34,10 +35,13 @@ const setupWorkerProcess = () => {
 		workers[i].on('message',function (message){
 			console.log(message);
 		})
+
+		
 	} 
 
-	cluster.on('online', function(message){
-		console.log('Worker '+worker.process.id + 'is listening');
+	cluster.on('online', function(worker){
+		//console.log()
+		console.log('Worker '+worker.process.pid + ' is listening');
 	})
 
 	cluster.on('exit', function (worker,code,signal){
@@ -61,8 +65,8 @@ const setUpExpress = () =>{
 	}))
 	app.disable('x-powered-by');
 	setRouter(app)
-	app.server.listen('8000',()=>{
-		console.log(`We are ready flight on port ${app.server.address().port()} for Process Id ${process.id}`)
+	app.server.listen('5634',()=>{
+		console.log(`We are ready flight on port ${app.server.address().port} for Process Id ${process.pid}`)
 	})
 	app.on('error',(appErr,appRes)=>{
 		console.error('appError',appErr.stack)
@@ -70,3 +74,16 @@ const setUpExpress = () =>{
 		console.error('returnHeaderOnErrorModel',appRes.req.headers)
 	})
 }	
+
+const setupServer  = (isClusterRequired) =>{
+	if(isClusterRequired && cluster.isMaster){
+		setupWorkerProcess();
+	}else{
+		setUpExpress();
+	}
+}
+
+setupServer(true);
+
+
+
