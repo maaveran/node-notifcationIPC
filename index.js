@@ -2,8 +2,12 @@ const cluster  =  require('cluster');
 const  http    =  require('http')
 const express  =  require('express');
 const morgan   =  require('morgan'); 
-const setRouter   =  require('./router')
+const router   =  require('./router')
+const cors        =  require('cors')
 const bodyParser =  require('body-parser');
+
+//env
+require('dotenv').config()	
 
 const app = express()
 let   workers  =  [];
@@ -21,7 +25,7 @@ process.on('uncaughtException',(uncaughtExc)=>{
 })
 
 const setupWorkerProcess = () => {
-	let numCPUs = require('os').cpus().length
+	let numCPUs = process.env.CPU_ALLOWED ||  require('os').cpus().length 
 
 	//read total core
 	console.info(`total cores  : `+numCPUs)
@@ -36,7 +40,6 @@ const setupWorkerProcess = () => {
 			console.log(message);
 		})
 
-		
 	} 
 
 	cluster.on('online', function(worker){
@@ -60,13 +63,14 @@ const setUpExpress = () =>{
 	
 	app.server =  http.createServer(app);
 	app.use(morgan('tiny'))
+	app.use(cors())
 	app.use(bodyParser.json({
 		limit : '2mb'
 	}))
 	app.disable('x-powered-by');
-	setRouter(app)
-	app.server.listen('5634',()=>{
-		console.log(`We are ready flight on port ${app.server.address().port} for Process Id ${process.pid}`)
+	app.use('/',router)
+	app.server.listen(process.env.PORT || 1804,()=>{
+		console.log(`Ready, take of on port ${app.server.address().port} and processing at PID :: ${process.pid}`)
 	})
 	app.on('error',(appErr,appRes)=>{
 		console.error('appError',appErr.stack)

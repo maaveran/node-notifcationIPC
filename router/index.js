@@ -1,9 +1,12 @@
-const  express =  require('express')
-const  classes  =  require('../workerCluster')
-const router  = express.Router()
+const  express               =  require('express')
+const  {CreateList}          =  require('../model/workerCluster')
+const  router                =  express.Router()
 
-const setRouter  = (app) => {
-    router.get('/status',(req,res)=>res.send({ status  : 200}))
-}
 
-module.exports = setRouter
+router.get('/status',(req,res)=>{
+    res.status(200).send({status : 200})
+})
+router.route('/list').get(CreateList)
+
+
+module.exports = router
